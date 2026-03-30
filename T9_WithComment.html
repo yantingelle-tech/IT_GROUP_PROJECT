@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service - ShopEase</title>
+    <style>
+        /* ============================================
+           GLOBAL STYLES / 全域樣式
+           ============================================ */
+        
+        /* Reset all margins and padding / 重置所有邊距和內距 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling - changes background based on user role / 主體樣式 - 根據用戶角色改變背景 */
+        body {
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.5s ease;
+        }
+
+        /* Customer background color (Sky Blue) / 客戶背景顏色（天藍色） */
+        body.customer {
+            background: #89f7fe;
+        }
+
+        /* Merchant background color (Mint Green) / 商家背景顏色（薄荷綠） */
+        body.merchant {
+            background: #84fab0;
+        }
+
+        /* Main container - centers content / 主容器 - 置中內容 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+           HEADER SECTION / 頁首區域
+           ============================================ */
+        
+        /* Header box - white background / 頁首框 - 白色背景 */
+        .header {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Main title / 主標題 */
+        .header h1 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+        /* Subtitle / 副標題 */
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* User info section - shows logged in user / 用戶資訊區域 - 顯示登入用戶 */
+        .user-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* User role badge styling / 用戶角色標籤樣式 */
+        .user-role {
+            font-weight: bold;
+            padding: 4px 12px;
+            display: inline-block;
+            font-size: 12px;
+        }
+
+        /* Customer role badge (Blue) / 客戶角色標籤（藍色） */
+        .user-role.customer {
+            background: #66a6ff;
+            color: white;
+        }
+
+        /* Merchant role badge (Green) / 商家角色標籤（綠色） */
+        .user-role.merchant {
+            background: #48bb78;
+            color: white;
+        }
+
+        /* Logout button / 登出按鈕 */
+        .logout-btn {
+            padding: 6px 15px;
+            background: #f56565;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Logout button hover effect / 登出按鈕懸停效果 */
+        .logout-btn:hover {
+            background: #e53e3e;
+        }
+
+        /* ============================================
+           MAIN GRID LAYOUT / 主網格佈局
+           ============================================ */
+        
+        /* Grid layout for cards - responsive / 卡片網格佈局 - 響應式 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+        }
+
+        /* Card styling - each feature container / 卡片樣式 - 每個功能容器 */
+        .card {
+            background: white;
+            padding: 20px;
+        }
+
+        /* Card title / 卡片標題 */
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* ============================================
+           LIVE CHAT SYSTEM / 即時聊天系統
+           ============================================ */
+        
+        /* Chat container - fixed height / 聊天容器 - 固定高度 */
+        .chat-container {
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chat messages area - scrollable / 聊天訊息區域 - 可滾動 */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #fafafa;
+            margin-bottom: 12px;
+        }
+
+        /* Individual message styling / 單個訊息樣式 */
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* User messages align to right / 用戶訊息靠右對齊 */
+        .message.user {
+            align-items: flex-end;
+        }
+
+        /* Support messages align to left / 客服訊息靠左對齊 */
+        .message.support {
+            align-items: flex-start;
+        }
+
+        /* Merchant messages align to left / 商家訊息靠左對齊 */
+        .message.merchant {
+            align-items: flex-start;
+        }
+
+        /* Message bubble styling / 訊息氣泡樣式 */
+        .message-content {
+            max-width: 75%;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        /* User message bubble color / 用戶訊息氣泡顏色 */
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Support message bubble color / 客服訊息氣泡顏色 */
+        .message.support .message-content {
+            background: #e5e5e5;
+            color: #333;
+        }
+
+        /* Merchant message bubble color / 商家訊息氣泡顏色 */
+        .message.merchant .message-content {
+            background: #48bb78;
+            color: white;
+        }
+
+        /* Message timestamp / 訊息時間戳 */
+        .message-time {
+            font-size: 10px;
+            color: #999;
+            margin-top: 3px;
+        }
+
+        /* Chat input area - flex layout / 聊天輸入區域 - 彈性佈局 */
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Chat input field / 聊天輸入框 */
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* Send button / 發送按鈕 */
+        .send-btn {
+            padding: 8px 18px;
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Send button hover effect / 發送按鈕懸停效果 */
+        .send-btn:hover {
+            background: #5a67d8;
+        }
+
+        /* ============================================
+           MERCHANT PANEL (Staff Only) / 商家面板（僅限員工）
+           ============================================ */
+        
+        /* Merchant panel - hidden by default / 商家面板 - 預設隱藏 */
+        .merchant-panel {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+            display: none;
+        }
+
+        /* Show merchant panel for merchants / 為商家顯示商家面板 */
+        .merchant-panel.visible {
+            display: block;
+        }
+
+        /* Merchant panel title / 商家面板標題 */
+        .merchant-title {
+            font-size: 12px;
+            color: #48bb78;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        /* Merchant input area / 商家輸入區域 */
+        .merchant-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Merchant input field / 商家輸入框 */
+        .merchant-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #48bb78;
+            outline: none;
+            font-size: 14px;
+        }
+
+        /* Merchant send button / 商家發送按鈕 */
+        .merchant-send-btn {
+            padding: 8px 15px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* ============================================
+           FAQ SECTION / 常見問題區域
+           ============================================ */
+        
+        /* FAQ item container / 常見問題項目容器 */
+        .faq-item {
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+
+        /* FAQ question - clickable / 常見問題問題 - 可點擊 */
+        .faq-question {
+            padding: 12px;
+            background: #fafafa;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        /* FAQ question hover effect / 常見問題問題懸停效果 */
+        .faq-question:hover {
+            background: #f5f5f5;
+        }
+
+        /* FAQ answer - hidden by default / 常見問題答案 - 預設隱藏 */
+        .faq-answer {
+            padding: 0 12px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: white;
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Show FAQ answer when active / 啟用時顯示常見問題答案 */
+        .faq-item.active .faq-answer {
+            padding: 12px;
+            max-height: 150px;
+        }
+
+        /* ============================================
+           RETURN & REFUND PORTAL / 退貨退款入口
+           ============================================ */
+        
+        /* Return form container / 退貨表單容器 */
+        .return-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Return form inputs / 退貨表單輸入框 */
+        .return-form input, 
+        .return-form select, 
+        .return-form textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        /* Return form textarea / 退貨表單文字區域 */
+        .return-form textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        /* Submit return button / 提交退貨按鈕 */
+        .submit-return {
+            padding: 10px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Return status container / 退貨狀態容器 */
+        .return-status {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fafafa;
+        }
+
+        /* Return status title / 退貨狀態標題 */
+        .return-status strong {
+            font-size: 13px;
+        }
+
+        /* Individual return item / 單個退貨項目 */
+        .return-item {
+            background: white;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        /* Return item spacing / 退貨項目間距 */
+        .return-item div {
+            margin: 3px 0;
+        }
+
+        /* ============================================
+           MERCHANT CONTROLS / 商家控制面板
+           ============================================ */
+        
+        /* Merchant controls - hidden by default / 商家控制面板 - 預設隱藏 */
+        .merchant-controls {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f9f9f9;
+            display: none;
+        }
+
+        /* Show merchant controls for merchants / 為商家顯示商家控制面板 */
+        .merchant-controls.visible {
+            display: block;
+        }
+
+        /* Merchant controls title / 商家控制面板標題 */
+        .merchant-controls h3 {
+            color: #48bb78;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        /* Update status area / 更新狀態區域 */
+        .update-status {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        /* Status select dropdown / 狀態下拉選單 */
+        .status-select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        /* Update button / 更新按鈕 */
+        .update-btn {
+            padding: 8px 12px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* ============================================
+           LOGIN PAGE / 登入頁面
+           ============================================ */
+        
+        /* Login page container - full screen / 登入頁面容器 - 全螢幕 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Login box - white card / 登入框 - 白色卡片 */
+        .login-box {
+            background: white;
+            padding: 30px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        /* Login title / 登入標題 */
+        .login-box h2 {
+            color: #333;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        /* Login subtitle / 登入副標題 */
+        .login-box p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        /* Input group container / 輸入組容器 */
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        /* Input label / 輸入標籤 */
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 13px;
+        }
+
+        /* Input field / 輸入欄位 */
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        /* Login button / 登入按鈕 */
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        /* Login button hover effect / 登入按鈕懸停效果 */
+        .login-btn:hover {
+            background: #5a67d8;
+        }
+
+        /* Demo information section / 示範資訊區域 */
+        .demo-info {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        /* Demo text / 示範文字 */
+        .demo-info p {
+            font-size: 11px;
+            margin: 3px 0;
+            color: #999;
+        }
+
+        /* General button cursor / 通用按鈕游標 */
+        button {
+            cursor: pointer;
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN / 響應式設計
+           ============================================ */
+        
+        /* Mobile responsive - stack layout / 手機響應式 - 堆疊佈局 */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content Container - Hidden until login / 主內容容器 - 登入後顯示 -->
+    <div class="container" id="mainContainer" style="display: none;">
+        <!-- Header Section / 頁首區域 -->
+        <div class="header">
+            <h1>Customer Service</h1>
+            <p>Get support, ask questions, or request returns</p>
+            <!-- User Info Bar / 用戶資訊欄 -->
+            <div class="user-info">
+                <span>Logged in: <span id="userNameDisplay"></span> <span id="orderNumberDisplay" style="font-weight: bold;"></span></span>
+                <div>
+                    <span class="user-role" id="userRoleDisplay"></span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid - 3 columns / 主網格 - 3欄 -->
+        <div class="grid">
+            <!-- Card 1: Live Chat System / 卡片1: 即時聊天系統 -->
+            <div class="card">
+                <h2>Live Chat</h2>
+                <div class="chat-container">
+                    <!-- Chat Messages Display Area / 聊天訊息顯示區域 -->
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message support">
+                            <div class="message-content">
+                                Hello! How can I help you?
+                            </div>
+                            <div class="message-time">Just now</div>
+                        </div>
+                    </div>
+                    <!-- Customer Chat Input / 客戶聊天輸入 -->
+                    <div class="chat-input-area">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Type your message...">
+                        <button class="send-btn" onclick="sendMessage()">Send</button>
+                    </div>
+                    
+                    <!-- Merchant Reply Panel (Staff Only) / 商家回覆面板（僅限員工） -->
+                    <div class="merchant-panel" id="merchantPanel">
+                        <div class="merchant-title">Merchant Reply</div>
+                        <div class="merchant-input-area">
+                            <input type="text" class="merchant-input" id="merchantInput" placeholder="Reply as merchant...">
+                            <button class="merchant-send-btn" onclick="sendMerchantReply()">Reply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: FAQ Section / 卡片2: 常見問題 -->
+            <div class="card">
+                <h2>FAQ</h2>
+                <div class="faq-list">
+                    <!-- FAQ Item 1 / 常見問題項目1 -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Shipping time?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            3-5 business days standard, 1-2 days express.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 2 / 常見問題項目2 -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Return policy?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            30-day returns. Items must be unused.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 3 / 常見問題項目3 -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Track my order?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Use tracking number sent to your email.
+                        </div>
+                    </div>
+                    <!-- FAQ Item 4 / 常見問題項目4 -->
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Payment methods?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Credit cards, PayPal, Apple Pay, Google Pay.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Returns and Refunds Portal / 卡片3: 退貨退款入口 -->
+            <div class="card">
+                <h2>Returns and Refunds</h2>
+                <!-- Return Request Form / 退貨申請表單 -->
+                <form class="return-form">
+                    <input type="text" id="orderNumber" placeholder="Order Number">
+                    <input type="text" id="productName" placeholder="Product Name">
+                    <select id="returnReason">
+                        <option value="">Reason for return</option>
+                        <option value="defective">Defective/Damaged</option>
+                        <option value="wrong">Wrong Item</option>
+                        <option value="size">Wrong Size</option>
+                        <option value="changed">Changed Mind</option>
+                    </select>
+                    <textarea id="returnDetails" placeholder="Additional details..."></textarea>
+                    <button type="button" class="submit-return" onclick="submitReturn()">Submit Return</button>
+                </form>
+                <!-- Return Status Display / 退貨狀態顯示 -->
+                <div id="returnStatus" class="return-status">
+                    <strong>Return Status</strong>
+                    <div id="returnRequestsList">No returns</div>
+                </div>
+                
+                <!-- Merchant Controls (Staff Only) / 商家控制面板（僅限員工） -->
+                <div class="merchant-controls" id="merchantControls">
+                    <h3>Merchant Controls</h3>
+                    <div class="update-status">
+                        <input type="text" id="returnIdToUpdate" placeholder="Return ID" class="status-select">
+                        <select id="newStatus" class="status-select">
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <button class="update-btn" onclick="updateReturnStatusById()">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Page - Shown first / 登入頁面 - 首先顯示 -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <p>Access customer service portal</p>
+            <form onsubmit="return false;">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="customer or merchant">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="any password">
+                </div>
+                <button type="button" class="login-btn" onclick="login()">Login</button>
+            </form>
+            <div class="demo-info">
+                <p>Demo: username "customer" or "merchant"</p>
+                <p>Any password works</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // DATA STORAGE / 資料儲存
+        // Simulates separate JSON files for data persistence
+        // 模擬分開的JSON檔案來持久化資料
+        // ============================================
+        
+        // Chat data storage - simulates chat_data.json / 聊天資料儲存 - 模擬 chat_data.json
+        var chatData = { "messages": [] };
+        
+        // Returns data storage - simulates returns_data.json / 退貨資料儲存 - 模擬 returns_data.json
+        var returnsData = { "returns": [] };
+        
+        // Current logged in user / 當前登入用戶
+        var currentUser = null;
+        
+        // ============================================
+        // LOGIN SYSTEM / 登入系統
+        // Handles user authentication and role-based access
+        // 處理用戶驗證和基於角色的存取控制
+        // ============================================
+        
+        /**
+         * Login function - validates username and sets user role
+         * 登入函數 - 驗證用戶名並設定用戶角色
+         * English: Checks if username is "customer" or "merchant", sets background and UI
+         * Chinese: 檢查用戶名是否為 "customer" 或 "merchant"，設定背景和介面
+         */
+        function login() {
+            var username = document.getElementById('username').value.trim();
+            
+            if (username == "") {
+                alert("Enter username");
+                return;
+            }
+            
+            var userType = "";
+            if (username.toLowerCase() == "customer") {
+                userType = "customer";
+            } else if (username.toLowerCase() == "merchant") {
+                userType = "merchant";
+            } else {
+                alert("Use 'customer' or 'merchant'");
+                return;
+            }
+            
+            currentUser = {
+                username: username,
+                role: userType
+            };
+            
+            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            var body = document.body;
+            if (userType == "customer") {
+                body.className = "customer";
+            } else {
+                body.className = "merchant";
+            }
+            
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            
+            document.getElementById('userNameDisplay').innerHTML = username;
+            var roleDisplay = document.getElementById('userRoleDisplay');
+            roleDisplay.innerHTML = userType.toUpperCase();
+            roleDisplay.className = "user-role " + userType;
+            
+            if (userType == "customer") {
+                document.getElementById('orderNumberDisplay').innerHTML = ' | Order: #ORD-DEMO123';
+            } else {
+                document.getElementById('orderNumberDisplay').innerHTML = '';
+            }
+            
+            var merchantPanel = document.getElementById('merchantPanel');
+            var merchantControls = document.getElementById('merchantControls');
+            
+            if (userType == "merchant") {
+                merchantPanel.className = "merchant-panel visible";
+                merchantControls.className = "merchant-controls visible";
+            } else {
+                merchantPanel.className = "merchant-panel";
+                merchantControls.className = "merchant-controls";
+            }
+            
+            displayReturnStatus();
+        }
+        
+        /**
+         * Logout function - clears session and returns to login page
+         * 登出函數 - 清除會話並返回登入頁面
+         * English: Removes user session and shows login screen
+         * Chinese: 移除用戶會話並顯示登入畫面
+         */
+        function logout() {
+            currentUser = null;
+            sessionStorage.removeItem('currentUser');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainContainer').style.display = 'none';
+            document.body.className = "";
+        }
+        
+        /**
+         * Check existing session - restores login state on page refresh
+         * 檢查現有會話 - 頁面刷新時恢復登入狀態
+         * English: Loads saved user session from browser storage
+         * Chinese: 從瀏覽器儲存中載入已保存的用戶會話
+         */
+        function checkExistingSession() {
+            var savedUser = sessionStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                var body = document.body;
+                body.className = currentUser.role;
+                
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+                
+                document.getElementById('userNameDisplay').innerHTML = currentUser.username;
+                var roleDisplay = document.getElementById('userRoleDisplay');
+                roleDisplay.innerHTML = currentUser.role.toUpperCase();
+                roleDisplay.className = "user-role " + currentUser.role;
+                
+                if (currentUser.role == "customer") {
+                    document.getElementById('orderNumberDisplay').innerHTML = ' | Order: #ORD-DEMO123';
+                } else {
+                    document.getElementById('orderNumberDisplay').innerHTML = '';
+                }
+                
+                var merchantPanel = document.getElementById('merchantPanel');
+                var merchantControls = document.getElementById('merchantControls');
+                
+                if (currentUser.role == "merchant") {
+                    merchantPanel.className = "merchant-panel visible";
+                    merchantControls.className = "merchant-controls visible";
+                } else {
+                    merchantPanel.className = "merchant-panel";
+                    merchantControls.className = "merchant-controls";
+                }
+                
+                displayReturnStatus();
+            }
+        }
+        
+        // ============================================
+        // HELPER FUNCTIONS / 輔助函數
+        // Utility functions used across the application
+        // 應用程式中使用的通用函數
+        // ============================================
+        
+        /**
+         * Escape HTML special characters to prevent XSS attacks
+         * 轉義HTML特殊字符以防止XSS攻擊
+         * English: Converts &, <, > to safe HTML entities
+         * Chinese: 將 &, <, > 轉換為安全的HTML實體
+         */
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>]/g, function(m) {
+                if (m == '&') return '&amp;';
+                if (m == '<') return '&lt;';
+                if (m == '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        /**
+         * Get current time in HH:MM format
+         * 獲取當前時間（HH:MM格式）
+         * English: Returns formatted time string
+         * Chinese: 返回格式化的時間字串
+         */
+        function getTime() {
+            var now = new Date();
+            return now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+        }
+        
+        /**
+         * Simulate email notification
+         * 模擬電子郵件通知
+         * English: Shows alert to simulate email sending
+         * Chinese: 顯示提示來模擬發送郵件
+         */
+        function sendEmail(msg) {
+            alert("Email: " + msg);
+        }
+        
+        // ============================================
+        // LIVE CHAT SYSTEM / 即時聊天系統
+        // Handles customer and merchant messages
+        // 處理客戶和商家訊息
+        // ============================================
+        
+        /**
+         * Add message to chat display
+         * 添加訊息到聊天顯示
+         * English: Creates and appends message bubble to chat window
+         * Chinese: 創建並添加訊息氣泡到聊天視窗
+         */
+        function addMessage(text, sender) {
+            var chatMessages = document.getElementById('chatMessages');
+            var div = document.createElement('div');
+            div.className = 'message ' + sender;
+            div.innerHTML = '<div class="message-content">' + escapeHtml(text) + '</div>' +
+                           '<div class="message-time">' + getTime() + '</div>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            chatData.messages.push({ text: text, sender: sender, time: getTime() });
+            console.log("Chat saved:", chatData);
+        }
+        
+        /**
+         * Generate automatic response based on customer message
+         * 根據客戶訊息生成自動回覆
+         * English: Returns predefined reply based on keywords
+         * Chinese: 根據關鍵字返回預定義回覆
+         */
+        function getAutoResponse(msg) {
+            var m = msg.toLowerCase();
+            if (m.indexOf('order') != -1) return "Please provide your order number and I'll help track it.";
+            if (m.indexOf('return') != -1) return "Use the return portal below to submit a return request.";
+            if (m.indexOf('shipping') != -1) return "Standard shipping takes 3-5 business days.";
+            if (m.indexOf('hello') != -1 || m.indexOf('hi') != -1) return "Hello! How can I help?";
+            return "Thanks for your message. Our team will assist you shortly.";
+        }
+        
+        /**
+         * Send customer message
+         * 發送客戶訊息
+         * English: Sends user message and triggers auto-response
+         * Chinese: 發送用戶訊息並觸發自動回覆
+         */
+        function sendMessage() {
+            var input = document.getElementById('chatInput');
+            var msg = input.value.trim();
+            if (msg == "") return;
+            
+            addMessage(msg, 'user');
+            input.value = '';
+            
+            setTimeout(function() {
+                var reply = getAutoResponse(msg);
+                addMessage(reply, 'support');
+                sendEmail("Support responded to your chat");
+            }, 500);
+        }
+        
+        /**
+         * Send merchant reply (staff only)
+         * 發送商家回覆（僅限員工）
+         * English: Allows merchants to respond to customers
+         * Chinese: 允許商家回覆客戶
+         */
+        function sendMerchantReply() {
+            if (currentUser && currentUser.role != "merchant") {
+                alert("Only merchants can reply");
+                return;
+            }
+            var input = document.getElementById('merchantInput');
+            var msg = input.value.trim();
+            if (msg == "") return;
+            
+            addMessage(msg, 'merchant');
+            input.value = '';
+            sendEmail("Merchant replied to inquiry");
+        }
+        
+        // ============================================
+        // FAQ SYSTEM / 常見問題系統
+        // Handles expand/collapse functionality
+        // 處理展開/收合功能
+        // ============================================
+        
+        /**
+         * Toggle FAQ answer visibility
+         * 切換常見問題答案的可見性
+         * English: Expands or collapses the answer section
+         * Chinese: 展開或收合答案區域
+         */
+        function toggleFAQ(el) {
+            var item = el.parentElement;
+            if (item.className.indexOf('active') != -1) {
+                item.className = 'faq-item';
+            } else {
+                item.className = 'faq-item active';
+            }
+        }
+        
+        // ============================================
+        // RETURN & REFUND SYSTEM / 退貨退款系統
+        // Handles return requests and status updates
+        // 處理退貨申請和狀態更新
+        // ============================================
+        
+        /**
+         * Generate unique tracking number for return
+         * 生成退貨專屬追蹤號碼
+         * English: Creates random tracking ID starting with "RET"
+         * Chinese: 創建以 "RET" 開頭的隨機追蹤ID
+         */
+        function generateTracking() {
+            return 'RET' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+        
+        /**
+         * Display return request status
+         * 顯示退貨申請狀態
+         * English: Shows recent return requests in the status panel
+         * Chinese: 在狀態面板中顯示最近的退貨申請
+         */
+        function displayReturnStatus() {
+            var div = document.getElementById('returnRequestsList');
+            if (returnsData.returns.length == 0) {
+                div.innerHTML = 'No returns';
+                return;
+            }
+            
+            var html = '';
+            var recent = returnsData.returns.slice(-3).reverse();
+            for (var i = 0; i < recent.length; i++) {
+                var r = recent[i];
+                html += '<div class="return-item">' +
+                        '<div><strong>ID:</strong> ' + r.id + '</div>' +
+                        '<div><strong>Order:</strong> ' + r.orderNumber + '</div>' +
+                        '<div><strong>Product:</strong> ' + r.productName + '</div>' +
+                        '<div><strong>Status:</strong> ' + r.status + '</div>' +
+                        '<div><strong>Tracking:</strong> ' + r.tracking + '</div>' +
+                        '</div>';
+            }
+            div.innerHTML = html;
+        }
+        
+        /**
+         * Submit return request
+         * 提交退貨申請
+         * English: Creates and saves return request, updates order number display
+         * Chinese: 創建並保存退貨申請，更新訂單號顯示
+         */
+        function submitReturn() {
+            var order = document.getElementById('orderNumber').value;
+            var product = document.getElementById('productName').value;
+            var reason = document.getElementById('returnReason').value;
+            
+            if (!order || !product || !reason) {
+                alert("Fill all fields");
+                return;
+            }
+            
+            var returnReq = {
+                id: 'RET-' + Date.now(),
+                orderNumber: order,
+                productName: product,
+                reason: reason,
+                status: 'Pending',
+                date: new Date().toLocaleString(),
+                tracking: generateTracking()
+            };
+            
+            returnsData.returns.push(returnReq);
+            console.log("Returns saved:", returnsData);
+            
+            if (currentUser && currentUser.role
