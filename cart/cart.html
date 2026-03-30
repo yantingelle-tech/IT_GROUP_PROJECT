@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车</title>
+    <link rel="stylesheet" href="cart.css">
+</head>
+
+<body>
+    <h1>商品列表</h1>
+    <div id="products"></div>
+
+    <h2>购物车 (<span id="count">0</span>)</h2>
+    <div id="cart"></div>
+    <div id="total">总计: ¥0</div>
+    <button id="checkout-btn" onclick="checkout()">结账</button>
+
+    <script src="database.js"></script>
+    <script src="cart.js"></script>
+</body>
+
+</html>
