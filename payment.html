@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Payment</title>
+    <link rel="stylesheet" href="payment.css">
+</head>
+<body>
+    <h2>Customer Payment</h2>
+
+    <div class="payment-box">
+        <label>Amount:</label>
+        <input type="number" id="amount" placeholder="Enter amount">
+
+        <label>Payment Method:</label>
+        <select id="method">
+            <option value="Credit Card">Credit Card</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+        </select>
+
+        <button onclick="startPayment()">Pay Now</button>
+    </div>
+
+    <script src="payment.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" /> 
+    <title>Comments (Customer & Merchant)</title>
+
+    <link rel="stylesheet" href="comments-style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Comments System</h1>
+        <div class="card customer-card">
+            <h3>Customer - Post Comment</h3>
+            <label>Select Product:</label>
+            <select id="cusProduct">
+                <option value="Laptop">High-performance Laptop</option>
+                <option value="Phone">Smart Phone</option>
+                <option value="Headset">Wireless Headset</option>
+                <option value="Keyboard">Mechanical Keyboard</option>
+            </select>
+
+            <label>Rating (1-5):</label>
+            <select id="cusRating">
+                <option value="5">⭐⭐⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="1">⭐</option>
+            </select>
+
+            <label>Your Comment:</label>
+            <textarea id="cusContent" placeholder="Write your comment here..."></textarea>
+
+            <button onclick="startCustomerComment()">Post Comment</button>
+        </div>
+
+        <div class="card merchant-card">
+            <h3>Merchant - Reply Comment</h3>
+            <label>Select Comment to Reply (ID):</label>
+            <select id="merCommentId"></select>
+
+            <label>Merchant Reply:</label>
+            <textarea id="merContent" placeholder="Write your reply here..."></textarea>
+
+            <button onclick="startMerchantReply()">Reply Now</button>
+        </div>
+
+        <div class="card show-card">
+            <h3>All Comments & Replies</h3>
+            <div id="commentList"></div>
+        </div>
+    </div>
+
+    <script src="comments.js"></script>
+</body>
+</html>
