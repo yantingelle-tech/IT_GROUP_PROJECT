@@ -1,0 +1,901 @@
+<!DOCTYPE html> //i add the login page so that it will work
+<html lang="en"> //replace line 569, 596 for the login part
+// if too long you guys can delete FAQ part on line 233-266, 490-530, 770-777(th number will change if u deletethe
+pervious lines) and the chat part on line 167-231, 450-490, 770-777(th number will change if u delete the previous
+lines)
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Service - ShopEase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.5s ease;
+        }
+
+        body.customer {
+            background: #89f7fe;
+        }
+
+        body.merchant {
+            background: #84fab0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .user-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-role {
+            font-weight: bold;
+            padding: 4px 12px;
+            display: inline-block;
+            font-size: 12px;
+        }
+
+        .user-role.customer {
+            background: #66a6ff;
+            color: white;
+        }
+
+        .user-role.merchant {
+            background: #48bb78;
+            color: white;
+        }
+
+        .logout-btn {
+            padding: 6px 15px;
+            background: #f56565;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .logout-btn:hover {
+            background: #e53e3e;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chat-container {
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #fafafa;
+            margin-bottom: 12px;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message.support {
+            align-items: flex-start;
+        }
+
+        .message.merchant {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        .message.user .message-content {
+            background: #667eea;
+            color: white;
+        }
+
+        .message.support .message-content {
+            background: #e5e5e5;
+            color: #333;
+        }
+
+        .message.merchant .message-content {
+            background: #48bb78;
+            color: white;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #999;
+            margin-top: 3px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .send-btn {
+            padding: 8px 18px;
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .send-btn:hover {
+            background: #5a67d8;
+        }
+
+        .merchant-panel {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+            display: none;
+        }
+
+        .merchant-panel.visible {
+            display: block;
+        }
+
+        .merchant-title {
+            font-size: 12px;
+            color: #48bb78;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .merchant-input-area {
+            display: flex;
+            gap: 8px;
+        }
+
+        .merchant-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #48bb78;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .merchant-send-btn {
+            padding: 8px 15px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .faq-item {
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+
+        .faq-question {
+            padding: 12px;
+            background: #fafafa;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .faq-question:hover {
+            background: #f5f5f5;
+        }
+
+        .faq-answer {
+            padding: 0 12px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: white;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 12px;
+            max-height: 150px;
+        }
+
+        .return-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .return-form input,
+        .return-form select,
+        .return-form textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .return-form textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .submit-return {
+            padding: 10px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .return-status {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fafafa;
+        }
+
+        .return-status strong {
+            font-size: 13px;
+        }
+
+        .return-item {
+            background: white;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .return-item div {
+            margin: 3px 0;
+        }
+
+        .merchant-controls {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f9f9f9;
+            display: none;
+        }
+
+        .merchant-controls.visible {
+            display: block;
+        }
+
+        .merchant-controls h3 {
+            color: #48bb78;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .update-status {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .status-select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        .update-btn {
+            padding: 8px 12px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 30px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .login-box h2 {
+            color: #333;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .login-box p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            background: #5a67d8;
+        }
+
+        .demo-info {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .demo-info p {
+            font-size: 11px;
+            margin: 3px 0;
+            color: #999;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="mainContainer" style="display: none;">
+        <div class="header">
+            <h1>Customer Service</h1>
+            <p>Get support, ask questions, or request returns</p>
+            <div class="user-info">
+                <span>Logged in: <span id="userNameDisplay"></span> <span id="orderNumberDisplay"
+                        style="font-weight: bold;"></span></span>
+                <div>
+                    <span class="user-role" id="userRoleDisplay"></span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Live Chat</h2>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message support">
+                            <div class="message-content">
+                                Hello! How can I help you?
+                                <br>Enter shipping, order for quick help.
+                            </div>
+                            <div class="message-time">Just now</div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Type your message...">
+                        <button class="send-btn" onclick="sendMessage()">Send</button>
+                    </div>
+
+                    <div class="merchant-panel" id="merchantPanel">
+                        <div class="merchant-title">Merchant Reply</div>
+                        <div class="merchant-input-area">
+                            <input type="text" class="merchant-input" id="merchantInput"
+                                placeholder="Reply as merchant...">
+                            <button class="merchant-send-btn" onclick="sendMerchantReply()">Reply</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>FAQ</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Shipping time?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            3-5 business days standard, 1-2 days express.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Return policy?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            30-day returns. Items must be unused.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Track my order?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Use tracking number sent to your email.
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            Payment methods?
+                            <span>▼</span>
+                        </div>
+                        <div class="faq-answer">
+                            Credit cards, PayPal, AliPay, WeChat Pay, Google Pay, PayMe.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Returns and Refunds</h2>
+                <form class="return-form">
+                    <input type="text" id="orderNumber" placeholder="Order Number">
+                    <input type="text" id="productName" placeholder="Product Name">
+                    <select id="returnReason">
+                        <option value="">Reason for return</option>
+                        <option value="defective">Defective/Damaged</option>
+                        <option value="wrong">Wrong Item</option>
+                        <option value="size">Wrong Size</option>
+                        <option value="changed">Changed Mind</option>
+                    </select>
+                    <textarea id="returnDetails" placeholder="Additional details..."></textarea>
+                    <button type="button" class="submit-return" onclick="submitReturn()">Submit Return</button>
+                </form>
+                <div id="returnStatus" class="return-status">
+                    <strong>Return Status</strong>
+                    <div id="returnRequestsList">No returns</div>
+                </div>
+
+                <div class="merchant-controls" id="merchantControls">
+                    <h3>Merchant Controls</h3>
+                    <div class="update-status">
+                        <input type="text" id="returnIdToUpdate" placeholder="Return ID" class="status-select">
+                        <select id="newStatus" class="status-select">
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                        <button class="update-btn" onclick="updateReturnStatusById()">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <p>Access customer service portal</p>
+            <form onsubmit="return false;">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="customer or merchant">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="any password">
+                </div>
+                <button type="button" class="login-btn" onclick="login()">Login</button>
+            </form>
+            <div class="demo-info">
+                <p>Demo: username "customer" or "merchant"</p>
+                <p>Any password works</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var chatData = { "messages": [] };
+        var returnsData = { "returns": [] };
+        var currentUser = null;
+
+        function login() {
+            var username = document.getElementById('username').value.trim();
+
+            if (username == "") {
+                alert("Enter username");
+                return;
+            }
+
+            var userType = "";
+            if (username.toLowerCase() == "customer") {
+                userType = "customer";
+            } else if (username.toLowerCase() == "merchant") {
+                userType = "merchant";
+            } else {
+                alert("Use 'customer' or 'merchant'");
+                return;
+            }
+
+            currentUser = {
+                username: username,
+                role: userType
+            };
+
+            sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            var body = document.body;
+            if (userType == "customer") {
+                body.className = "customer";
+            } else {
+                body.className = "merchant";
+            }
+
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+
+            document.getElementById('userNameDisplay').innerHTML = username;
+            var roleDisplay = document.getElementById('userRoleDisplay');
+            roleDisplay.innerHTML = userType.toUpperCase();
+            roleDisplay.className = "user-role " + userType;
+
+            if (userType == "customer") {
+                document.getElementById('orderNumberDisplay').innerHTML = ' | Order: #ORD-DEMO123';
+            } else {
+                document.getElementById('orderNumberDisplay').innerHTML = '';
+            }
+
+            var merchantPanel = document.getElementById('merchantPanel');
+            var merchantControls = document.getElementById('merchantControls');
+
+            if (userType == "merchant") {
+                merchantPanel.className = "merchant-panel visible";
+                merchantControls.className = "merchant-controls visible";
+            } else {
+                merchantPanel.className = "merchant-panel";
+                merchantControls.className = "merchant-controls";
+            }
+
+            displayReturnStatus();
+        }
+
+        function logout() {
+            currentUser = null;
+            sessionStorage.removeItem('currentUser');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainContainer').style.display = 'none';
+            document.body.className = "";
+        }
+
+        function checkExistingSession() {
+            var savedUser = sessionStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                var body = document.body;
+                body.className = currentUser.role;
+
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+
+                document.getElementById('userNameDisplay').innerHTML = currentUser.username;
+                var roleDisplay = document.getElementById('userRoleDisplay');
+                roleDisplay.innerHTML = currentUser.role.toUpperCase();
+                roleDisplay.className = "user-role " + currentUser.role;
+
+                if (currentUser.role == "customer") {
+                    document.getElementById('orderNumberDisplay').innerHTML = ' | Order: #ORD-DEMO123';
+                } else {
+                    document.getElementById('orderNumberDisplay').innerHTML = '';
+                }
+
+                var merchantPanel = document.getElementById('merchantPanel');
+                var merchantControls = document.getElementById('merchantControls');
+
+                if (currentUser.role == "merchant") {
+                    merchantPanel.className = "merchant-panel visible";
+                    merchantControls.className = "merchant-controls visible";
+                } else {
+                    merchantPanel.className = "merchant-panel";
+                    merchantControls.className = "merchant-controls";
+                }
+
+                displayReturnStatus();
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>]/g, function (m) {
+                if (m == '&') return '&amp;';
+                if (m == '<') return '&lt;';
+                if (m == '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function getTime() {
+            var now = new Date();
+            return now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+        }
+
+        function sendEmail(msg) {
+            alert("Email: " + msg);
+        }
+
+        function addMessage(text, sender) {
+            var chatMessages = document.getElementById('chatMessages');
+            var div = document.createElement('div');
+            div.className = 'message ' + sender;
+            div.innerHTML = '<div class="message-content">' + escapeHtml(text) + '</div>' +
+                '<div class="message-time">' + getTime() + '</div>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            chatData.messages.push({ text: text, sender: sender, time: getTime() });
+            console.log("Chat saved:", chatData);
+        }
+
+        function getAutoResponse(msg) {
+            var m = msg.toLowerCase();
+            if (m.indexOf('order') != -1) return "Please provide your order number and I'll help track it.";
+            if (m.indexOf('return') != -1) return "Use the return portal below to submit a return request.";
+            if (m.indexOf('shipping') != -1) return "Standard shipping takes 3-5 business days.";
+            if (m.indexOf('hello') != -1 || m.indexOf('hi') != -1) return "Hello! How can I help?";
+            return "Thanks for your message. Our team will assist you shortly.";
+        }
+
+        function sendMessage() {
+            var input = document.getElementById('chatInput');
+            var msg = input.value.trim();
+            if (msg == "") return;
+
+            addMessage(msg, 'user');
+            input.value = '';
+
+            setTimeout(function () {
+                var reply = getAutoResponse(msg);
+                addMessage(reply, 'support');
+                sendEmail("Support responded to your chat");
+            }, 500);
+        }
+
+        function sendMerchantReply() {
+            if (currentUser && currentUser.role != "merchant") {
+                alert("Only merchants can reply");
+                return;
+            }
+            var input = document.getElementById('merchantInput');
+            var msg = input.value.trim();
+            if (msg == "") return;
+
+            addMessage(msg, 'merchant');
+            input.value = '';
+            sendEmail("Merchant replied to inquiry");
+        }
+
+        function toggleFAQ(el) {
+            var item = el.parentElement;
+            if (item.className.indexOf('active') != -1) {
+                item.className = 'faq-item';
+            } else {
+                item.className = 'faq-item active';
+            }
+        }
+
+        function generateTracking() {
+            return 'RET' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+
+        function displayReturnStatus() {
+            var div = document.getElementById('returnRequestsList');
+            if (returnsData.returns.length == 0) {
+                div.innerHTML = 'No returns';
+                return;
+            }
+
+            var html = '';
+            var recent = returnsData.returns.slice(-3).reverse();
+            for (var i = 0; i < recent.length; i++) {
+                var r = recent[i];
+                html += '<div class="return-item">' +
+                    '<div><strong>ID:</strong> ' + r.id + '</div>' +
+                    '<div><strong>Order:</strong> ' + r.orderNumber + '</div>' +
+                    '<div><strong>Product:</strong> ' + r.productName + '</div>' +
+                    '<div><strong>Status:</strong> ' + r.status + '</div>' +
+                    '<div><strong>Tracking:</strong> ' + r.tracking + '</div>' +
+                    '</div>';
+            }
+            div.innerHTML = html;
+        }
+
+        function submitReturn() {
+            var order = document.getElementById('orderNumber').value;
+            var product = document.getElementById('productName').value;
+            var reason = document.getElementById('returnReason').value;
+
+            if (!order || !product || !reason) {
+                alert("Fill all fields");
+                return;
+            }
+
+            var returnReq = {
+                id: 'RET-' + Date.now(),
+                orderNumber: order,
+                productName: product,
+                reason: reason,
+                status: 'Pending',
+                date: new Date().toLocaleString(),
+                tracking: generateTracking()
+            };
+
+            returnsData.returns.push(returnReq);
+            console.log("Returns saved:", returnsData);
+
+            if (currentUser && currentUser.role == "customer") {
+                document.getElementById('orderNumberDisplay').innerHTML = ' | Order: ' + order;
+            }
+
+            sendEmail("Return submitted for " + order);
+            alert("Return request submitted!");
+
+            document.getElementById('orderNumber').value = '';
+            document.getElementById('productName').value = '';
+            document.getElementById('returnReason').value = '';
+            document.getElementById('returnDetails').value = '';
+
+            displayReturnStatus();
+        }
+
+        function updateReturnStatusById() {
+            if (currentUser && currentUser.role != "merchant") {
+                alert("Only merchants can update status");
+                return;
+            }
+
+            var id = document.getElementById('returnIdToUpdate').value;
+            var newStatus = document.getElementById('newStatus').value;
+
+            if (!id) {
+                alert("Enter Return ID");
+                return;
+            }
+
+            var found = false;
+            for (var i = 0; i < returnsData.returns.length; i++) {
+                if (returnsData.returns[i].id == id) {
+                    returnsData.returns[i].status = newStatus;
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                console.log("Updated returns:", returnsData);
+                displayReturnStatus();
+                sendEmail("Return " + id + " status updated to " + newStatus);
+                alert("Status updated!");
+                document.getElementById('returnIdToUpdate').value = '';
+            } else {
+                alert("Return ID not found");
+            }
+        }
+
+        window.onload = function () {
+            checkExistingSession();
+
+            var chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.onkeypress = function (e) {
+                    if (e.keyCode == 13) sendMessage();
+                };
+            }
+
+            var merchantInput = document.getElementById('merchantInput');
+            if (merchantInput) {
+                merchantInput.onkeypress = function (e) {
+                    if (e.keyCode == 13) sendMerchantReply();
+                };
+            }
+        };
+    </script>
+</body>
+
+</html>

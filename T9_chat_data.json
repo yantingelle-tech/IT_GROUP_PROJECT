@@ -1,0 +1,10 @@
+{
+    "messages": [
+        {
+            "text": "Hello",
+            "sender": "user",
+            "time": "14:30",
+            "timestamp": "2024-01-01T14:30:00.000Z"
+        }
+    ]
+}

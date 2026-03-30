@@ -1,0 +1,14 @@
+{
+    "returns": [
+        {
+            "id": "RET-1234567890",
+            "orderNumber": "#ORD-12345",
+            "productName": "Product Name",
+            "reason": "defective",
+            "details": "Details here",
+            "status": "Pending Review",
+            "date": "1/1/2024, 2:30:00 PM",
+            "trackingNumber": "RETABCD1234"
+        }
+    ]
+}
