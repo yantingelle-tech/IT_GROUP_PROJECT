@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopEase — Shopping System</title>
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        /* ============================================================
+           ENTRY PAGE SPECIFIC STYLES
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+        }
+
+        /* Hero section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 32px;
+        }
+
+        .hero__cta {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+
+        .hero__cta:hover {
+            transform: scale(1.05);
+        }
+
+        /* Feature cards */
+        .features {
+            max-width: 960px;
+            margin: -40px auto 40px;
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .feature-card__icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .feature-card h3 {
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .feature-card p {
+            color: #718096;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .feature-card a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .feature-card a:hover {
+            background: #5a67d8;
+        }
+
+        /* Demo credentials */
+        .demo-info {
+            max-width: 600px;
+            margin: 0 auto 40px;
+            padding: 0 16px;
+            text-align: center;
+        }
+
+        .demo-info h3 {
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .demo-info table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .demo-info th {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 10px 16px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .demo-info td {
+            padding: 10px 16px;
+            color: #2d3748;
+            font-size: 13px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .demo-info td code {
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        /* ===== DATA ANALYSIS STYLES ===== */
+        .analysis-section {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 24px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid #667eea;
+        }
+
+        .analysis-section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .analysis-stat-box {
+            flex: 1;
+            min-width: 140px;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .analysis-stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 8px 0;
+        }
+
+        .analysis-stat-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        .analysis-section h3 {
+            color: #4a5568;
+            margin: 24px 0 16px 0;
+            font-size: 18px;
+            border-left: 3px solid #667eea;
+            padding-left: 12px;
+        }
+
+        .analysis-customer-list {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .analysis-customer-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        .analysis-customer-item:last-child {
+            border-bottom: none;
+        }
+
+        .analysis-customer-item:hover {
+            background: #f7fafc;
+        }
+
+        .analysis-customer-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .analysis-customer-id {
+            font-size: 12px;
+            color: #a0aec0;
+            margin-top: 2px;
+        }
+
+        .analysis-customer-stats {
+            text-align: right;
+        }
+
+        .analysis-customer-amount {
+            font-weight: 700;
+            color: #48bb78;
+            font-size: 16px;
+        }
+
+        .analysis-customer-detail {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .analysis-merchant-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .analysis-merchant-item {
+            padding: 14px 16px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .analysis-merchant-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 6px;
+        }
+
+        .analysis-merchant-stats {
+            font-size: 13px;
+            color: #718096;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top navigation bar -->
+    <nav class="app-nav">
+        <a href="index.html" class="app-nav__brand">ShopEase</a>
+        <ul class="app-nav__links">
+            <li><a href="cart/cart.html">Cart</a></li>
+            <li><a href="comments.html">Comments</a></li>
+            <li><a href="T9_WithComment.html">Customer Service</a></li>
+            <li><a href="task1，2.html">Login / Register</a></li>
+        </ul>
+    </nav>
+
+    <!-- Dynamic welcome bar (populated by shared.js) -->
+    <div class="welcome-bar" id="welcomeBar"></div>
+
+    <!-- Hero section -->
+    <section class="hero">
+        <h1>Welcome to ShopEase</h1>
+        <p>A full-featured shopping platform with cart, payments, reviews, and customer service.</p>
+        <a href="task1，2.html" class="hero__cta">Get Started — Login or Register</a>
+    </section>
+
+    <!-- Feature cards -->
+    <section class="features">
+        <div class="feature-card">
+            <div class="feature-card__icon">&#128722;</div>
+            <h3>Browse &amp; Cart</h3>
+            <p>View products with images, add items to your cart, and manage quantities.</p>
+            <a href="cart/cart.html">Open Cart</a>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card__icon">&#128179;</div>
+            <h3>Checkout &amp; Pay</h3>
+            <p>Secure checkout with multiple payment methods and order confirmation.</p>
+            <a href="payment.html">Go to Payment</a>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card__icon">&#128172;</div>
+            <h3>Reviews</h3>
+            <p>Customers can leave star ratings and comments. Merchants can reply.</p>
+            <a href="comments.html">View Comments</a>
+        </div>
+        <div class="feature-card">
+            <div class="feature-card__icon">&#128222;</div>
+            <h3>Customer Service</h3>
+            <p>Live chat, FAQ, and a return/refund request portal.</p>
+            <a href="T9_WithComment.html">Open Service</a>
+        </div>
+    </section>
+
+    <!-- Demo credentials -->
+    <section class="demo-info">
+        <h3>Demo Credentials</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Role</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Customer</td>
+                    <td><code>customer</code></td>
+                    <td><code>123456</code></td>
+                </tr>
+                <tr>
+                    <td>Merchant</td>
+                    <td><code>merchant</code></td>
+                    <td><code>123456</code></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Data Analysis Section - Always visible -->
+    <div id="analysisContainer"></div>
+
+    <!-- Load shared data + render welcome bar -->
+    <script src="shared.js"></script>
+
+    <!-- Load new_database.js -->
+    <script src="new_database.js"></script>
+
+    <!-- Data Analysis Script - Shows for everyone, no login required -->
+    <script>
+        // Function to load and display data analysis (visible to everyone)
+        function loadDataAnalysis() {
+            // Wait for database to be ready
+            if (!window.db) {
+                console.log('Waiting for database to load...');
+                setTimeout(loadDataAnalysis, 500);
+                return;
+            }
+
+            // Get data from database
+            const users = window.db.users || [];
+            const orders = window.db.orders || [];
+            const reviews = window.db.reviews || [];
+            const products = window.db.products || [];
+
+            // Filter customers
+            const customers = users.filter(u => u.role === 'customer' || u.identity === 'customer');
+            const merchants = users.filter(u => u.role === 'merchant' || u.identity === 'merchant');
+
+            // Calculate total revenue
+            let totalRevenue = 0;
+            for (let i = 0; i < orders.length; i++) {
+                totalRevenue = totalRevenue + (orders[i].total || orders[i].amount || 0);
+            }
+
+            // Calculate average rating
+            let totalRating = 0;
+            for (let i = 0; i < reviews.length; i++) {
+                totalRating = totalRating + (reviews[i].rating || 0);
+            }
+            const avgRating = reviews.length > 0 ? (totalRating / reviews.length).toFixed(1) : 0;
+
+            // Calculate average orders per customer
+            const avgOrdersPerCustomer = customers.length > 0 ? (orders.length / customers.length).toFixed(2) : 0;
+
+            // Build customer list HTML
+            let customerHtml = '';
+            if (customers.length === 0) {
+                customerHtml = '<div class="no-data">No customers found</div>';
+            } else {
+                // Sort customers by total spent
+                const customerData = [];
+                for (let i = 0; i < customers.length; i++) {
+                    const customer = customers[i];
+                    let orderCount = 0;
+                    let customerTotal = 0;
+                    for (let j = 0; j < orders.length; j++) {
+                        if (orders[j].customerId === customer.id ||
+                            orders[j].userId === customer.id ||
+                            orders[j].customer === customer.username) {
+                            orderCount++;
+                            customerTotal = customerTotal + (orders[j].total || orders[j].amount || 0);
+                        }
+                    }
+                    let reviewCount = 0;
+                    for (let j = 0; j < reviews.length; j++) {
+                        if (reviews[j].customerId === customer.id || reviews[j].username === customer.username) {
+                            reviewCount++;
+                        }
+                    }
+                    customerData.push({
+                        ...customer,
+                        orderCount,
+                        totalSpent: customerTotal,
+                        reviewCount
+                    });
+                }
+
+                // Sort by total spent (highest first)
+                customerData.sort((a, b) => b.totalSpent - a.totalSpent);
+
+                for (let i = 0; i < customerData.length; i++) {
+                    const c = customerData[i];
+                    customerHtml += `
+                        <div class="analysis-customer-item">
+                            <div>
+                                <div class="analysis-customer-name">${c.name || c.username || c.id}</div>
+                                <div class="analysis-customer-id">ID: ${c.id}</div>
+                            </div>
+                            <div class="analysis-customer-stats">
+                                <div class="analysis-customer-amount">$${c.totalSpent.toLocaleString()}</div>
+                                <div class="analysis-customer-detail">${c.orderCount} orders • ${c.reviewCount} reviews</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Build merchant list HTML
+            let merchantHtml = '';
+            if (merchants.length === 0) {
+                merchantHtml = '<div class="no-data">No merchants found</div>';
+            } else {
+                for (let i = 0; i < merchants.length; i++) {
+                    const merchant = merchants[i];
+                    let productCount = 0;
+                    for (let j = 0; j < products.length; j++) {
+                        if (products[j].merchantId === merchant.id) {
+                            productCount++;
+                        }
+                    }
+                    merchantHtml += `
+                        <div class="analysis-merchant-item">
+                            <div class="analysis-merchant-name">${merchant.name || merchant.username || merchant.id}</div>
+                            <div class="analysis-merchant-stats">${productCount} products</div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Create the analysis HTML
+            const analysisHTML = `
+                <div class="analysis-section">
+                    <h2>
+                        Data Analysis Report
+                    </h2>
+                    
+                    <div class="analysis-stats">
+                        <div class="analysis-stat-box">
+                            <div class="analysis-stat-label">Total Customers</div>
+                            <div class="analysis-stat-number">${customers.length}</div>
+                        </div>
+                        <div class="analysis-stat-box">
+                            <div class="analysis-stat-label">Total Merchants</div>
+                            <div class="analysis-stat-number">${merchants.length}</div>
+                        </div>
+                        <div class="analysis-stat-box">
+                            <div class="analysis-stat-label">Total Orders</div>
+                            <div class="analysis-stat-number">${orders.length}</div>
+                        </div>
+                        <div class="analysis-stat-box">
+                            <div class="analysis-stat-label">Total Revenue</div>
+                            <div class="analysis-stat-number">$${totalRevenue.toLocaleString()}</div>
+                        </div>
+                        <div class="analysis-stat-box">
+                            <div class="analysis-stat-label">Avg Orders/Customer</div>
+                            <div class="analysis-stat-number">${avgOrdersPerCustomer}</div>
+                        </div>
+                        <div class="analysis-stat-box">
+                            <div class="analysis-stat-label">Total Reviews</div>
+                            <div class="analysis-stat-number">${reviews.length}</div>
+                        </div>
+                        <div class="analysis-stat-box">
+                            <div class="analysis-stat-label">Average Rating</div>
+                            <div class="analysis-stat-number">⭐ ${avgRating}</div>
+                        </div>
+                    </div>
+
+                    <h3>All Customers (sorted by spending)</h3>
+                    <div class="analysis-customer-list">
+                        ${customerHtml}
+                    </div>
+
+                    <h3>Merchants & Products</h3>
+                    <div class="analysis-merchant-list">
+                        ${merchantHtml}
+                    </div>
+                </div>
+            `;
+
+            const container = document.getElementById('analysisContainer');
+            if (container) {
+                container.innerHTML = analysisHTML;
+            }
+        }
+
+        // Load analysis when page is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            // Small delay to ensure database is loaded
+            setTimeout(loadDataAnalysis, 500);
+        });
+
+        // Also try to load immediately
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () {
+                setTimeout(loadDataAnalysis, 500);
+            });
+        } else {
+            setTimeout(loadDataAnalysis, 500);
+        }
+
+        // Render welcome bar
+        if (typeof renderWelcomeBar === 'function') {
+            window.addEventListener('DOMContentLoaded', function () {
+                renderWelcomeBar('welcomeBar');
+            });
+        }
+    </script>
+</body>
+
+</html>
