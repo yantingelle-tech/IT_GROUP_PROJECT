@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping System</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        /* 容器样式 */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 模块通用样式（初始隐藏，按需显示） */
+        .module {
+            display: none;
+        }
+
+        .module.active {
+            display: block;
+        }
+
+        /* 标题样式 */
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* 按钮样式 */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button.secondary {
+            background-color: #6c757d;
+        }
+
+        button.secondary:hover {
+            background-color: #545b62;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        /* 提示信息样式 */
+        .message {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* 列表样式（商品/分类展示） */
+        .list {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .list-item {
+            padding: 5px 0;
+            border-bottom: 1px dashed #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 初始菜单模块 -->
+        <div id="initialModule" class="module active">
+            <h2>Welcome to Shopping System</h2>
+            <div class="btn-group">
+                <button id="btnCreateAccount">1. Create Account</button>
+                <button id="btnLanding">2. Landing</button>
+                <button id="btnResetPwd">3. Reset Password</button>
+                <button id="btnExit">4. Exit</button>
+            </div>
+            <div id="initialMessage" class="message"></div>
+        </div>
+
+        <!-- 创建账户模块 -->
+        <div id="createAccountModule" class="module">
+            <h2>Create Account</h2>
+            <div class="form-group">
+                <label for="accountID">Account ID</label>
+                <input type="text" id="accountID" placeholder="Enter your account ID">
+            </div>
+            <div class="form-group">
+                <label for="password1">Password</label>
+                <input type="password" id="password1" placeholder="Enter password">
+            </div>
+            <div class="form-group">
+                <label for="password2">Confirm Password</label>
+                <input type="password" id="password2" placeholder="Confirm password">
+            </div>
+            <div class="form-group">
+                <label for="email1">Email</label>
+                <input type="email" id="email1" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="email2">Confirm Email</label>
+                <input type="email" id="email2" placeholder="Confirm your email">
+            </div>
+            <div class="form-group">
+                <label for="identity">Identity (customer/merchant)</label>
+                <input type="text" id="identity" placeholder="Enter customer or merchant">
+            </div>
+            <div class="btn-group">
+                <button id="btnSubmitCreate">Submit</button>
+                <button id="btnBackCreate" class="secondary">Back</button>
+            </div>
+            <div id="createMessage" class="message"></div>
+        </div>
+
+        <!-- 登录模块 -->
+        <div id="landingModule" class="module">
+            <h2>Landing</h2>
+            <div class="form-group">
+                <label for="loginID">Account ID</label>
+                <input type="text" id="loginID" placeholder="Enter your account ID">
+            </div>
+            <div class="form-group">
+                <label for="loginPwd">Password</label>
+                <input type="password" id="loginPwd" placeholder="Enter your password">
+            </div>
+            <div class="btn-group">
+                <button id="btnSubmitLogin">Submit</button>
+                <button id="btnBackLogin" class="secondary">Back</button>
+            </div>
+            <div id="loginMessage" class="message"></div>
+        </div>
+
+        <!-- 重置密码模块 -->
+        <div id="resetPwdModule" class="module">
+            <h2>Reset Password</h2>
+            <div class="form-group">
+                <label for="resetID">Account ID</label>
+                <input type="text" id="resetID" placeholder="Enter your account ID">
+            </div>
+            <div class="form-group">
+                <label for="resetEmail">Email</label>
+                <input type="email" id="resetEmail" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="newPwd">New Password</label>
+                <input type="password" id="newPwd" placeholder="Enter new password">
+            </div>
+            <div class="btn-group">
+                <button id="btnSubmitReset">Submit</button>
+                <button id="btnBackReset" class="secondary">Back</button>
+            </div>
+            <div id="resetMessage" class="message"></div>
+        </div>
+
+        <!-- 客户中心模块 -->
+        <div id="customerModule" class="module">
+            <h2>Customer Center</h2>
+            <div class="form-group">
+                <label for="searchKeyword">Search Product (Name/Category)</label>
+                <input type="text" id="searchKeyword" placeholder="Enter keyword to search">
+            </div>
+            <div class="btn-group">
+                <button id="btnSearch">Search</button>
+                <button id="btnLogoutCustomer" class="secondary">Logout</button>
+            </div>
+            <div id="searchResult" class="list"></div>
+            <div id="customerMessage" class="message"></div>
+        </div>
+
+        <!-- 商家中心模块 -->
+        <div id="merchantModule" class="module">
+            <h2>Merchant Center</h2>
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" id="productName" placeholder="Enter product name">
+            </div>
+            <div class="form-group">
+                <label for="productPrice">Product Price ($)</label>
+                <input type="text" id="productPrice" placeholder="Enter price (e.g. 99.99)">
+            </div>
+            <div class="form-group">
+                <label>Existing Categories:</label>
+                <div id="categoryList" class="list"></div>
+            </div>
+            <div class="form-group">
+                <label for="productCategory">Product Category</label>
+                <input type="text" id="productCategory" placeholder="Enter existing category or new category">
+            </div>
+            <div class="btn-group">
+                <button id="btnAddProduct">Add Product</button>
+                <button id="btnLogoutMerchant" class="secondary">Logout</button>
+            </div>
+            <div id="merchantMessage" class="message"></div>
+        </div>
+    </div>
+
+    <script>
+        // 全局数据存储
+        const customerDataBase = []; // 用户账户数据库
+        const categoriesDataBase = ["electronics", "clothing", "daily necessities", "food", "book", "drinks"]; // 商品分类库
+        const productsDataBase = []; // 商品数据库
+        let CurrentUser = null; // 当前登录用户
+
+        // DOM 元素获取
+        // 初始模块
+        const initialModule = document.getElementById('initialModule');
+        const btnCreateAccount = document.getElementById('btnCreateAccount');
+        const btnLanding = document.getElementById('btnLanding');
+        const btnResetPwd = document.getElementById('btnResetPwd');
+        const btnExit = document.getElementById('btnExit');
+        const initialMessage = document.getElementById('initialMessage');
+
+        // 创建账户模块
+        const createAccountModule = document.getElementById('createAccountModule');
+        const accountID = document.getElementById('accountID');
+        const password1 = document.getElementById('password1');
+        const password2 = document.getElementById('password2');
+        const email1 = document.getElementById('email1');
+        const email2 = document.getElementById('email2');
+        const identity = document.getElementById('identity');
+        const btnSubmitCreate = document.getElementById('btnSubmitCreate');
+        const btnBackCreate = document.getElementById('btnBackCreate');
+        const createMessage = document.getElementById('createMessage');
+
+        // 登录模块
+        const landingModule = document.getElementById('landingModule');
+        const loginID = document.getElementById('loginID');
+        const loginPwd = document.getElementById('loginPwd');
+        const btnSubmitLogin = document.getElementById('btnSubmitLogin');
+        const btnBackLogin = document.getElementById('btnBackLogin');
+        const loginMessage = document.getElementById('loginMessage');
+
+        // 重置密码模块
+        const resetPwdModule = document.getElementById('resetPwdModule');
+        const resetID = document.getElementById('resetID');
+        const resetEmail = document.getElementById('resetEmail');
+        const newPwd = document.getElementById('newPwd');
+        const btnSubmitReset = document.getElementById('btnSubmitReset');
+        const btnBackReset = document.getElementById('btnBackReset');
+        const resetMessage = document.getElementById('resetMessage');
+
+        // 客户中心模块
+        const customerModule = document.getElementById('customerModule');
+        const searchKeyword = document.getElementById('searchKeyword');
+        const btnSearch = document.getElementById('btnSearch');
+        const btnLogoutCustomer = document.getElementById('btnLogoutCustomer');
+        const searchResult = document.getElementById('searchResult');
+        const customerMessage = document.getElementById('customerMessage');
+
+        // 商家中心模块
+        const merchantModule = document.getElementById('merchantModule');
+        const productName = document.getElementById('productName');
+        const productPrice = document.getElementById('productPrice');
+        const categoryList = document.getElementById('categoryList');
+        const productCategory = document.getElementById('productCategory');
+        const btnAddProduct = document.getElementById('btnAddProduct');
+        const btnLogoutMerchant = document.getElementById('btnLogoutMerchant');
+        const merchantMessage = document.getElementById('merchantMessage');
+
+        // 工具函数：显示提示信息
+        function showMessage(element, text, isSuccess = false) {
+            element.textContent = text;
+            element.className = 'message';
+            element.classList.add(isSuccess ? 'success' : 'error');
+            // 3秒后清空提示
+            setTimeout(() => {
+                element.textContent = '';
+                element.className = 'message';
+            }, 3000);
+        }
+
+        // 工具函数：切换模块显示
+        function switchModule(activeModule, ...hideModules) {
+            activeModule.classList.add('active');
+            hideModules.forEach(module => module.classList.remove('active'));
+            // 清空所有输入框
+            document.querySelectorAll('input').forEach(input => input.value = '');
+        }
+
+        // 初始模块按钮事件
+        // 创建账户
+        btnCreateAccount.addEventListener('click', () => {
+            switchModule(createAccountModule, initialModule, landingModule, resetPwdModule, customerModule, merchantModule);
+        });
+
+        // 登录
+        btnLanding.addEventListener('click', () => {
+            switchModule(landingModule, initialModule, createAccountModule, resetPwdModule, customerModule, merchantModule);
+        });
+
+        // 重置密码
+        btnResetPwd.addEventListener('click', () => {
+            switchModule(resetPwdModule, initialModule, createAccountModule, landingModule, customerModule, merchantModule);
+        });
+
+        // 退出
+        btnExit.addEventListener('click', () => {
+            showMessage(initialMessage, 'Goodbye!', true);
+            setTimeout(() => {
+                window.close(); // 关闭窗口（浏览器可能限制，仅作演示）
+            }, 1000);
+        });
+
+        // 创建账户模块事件
+        // 返回初始模块
+        btnBackCreate.addEventListener('click', () => {
+            switchModule(initialModule, createAccountModule);
+        });
+
+        // 提交创建账户
+        btnSubmitCreate.addEventListener('click', () => {
+            // 1. 验证账户ID
+            const accID = accountID.value.trim();
+            if (!accID) {
+                showMessage(createMessage, 'Account ID cannot be empty!');
+                return;
+            }
+            const idExists = customerDataBase.some(item => item.id === accID);
+            if (idExists) {
+                showMessage(createMessage, 'This ID is already being used!');
+                return;
+            }
+
+            // 2. 验证密码
+            const pwd1 = password1.value.trim();
+            const pwd2 = password2.value.trim();
+            if (!pwd1 || !pwd2) {
+                showMessage(createMessage, 'Password cannot be empty!');
+                return;
+            }
+            if (pwd1 !== pwd2) {
+                showMessage(createMessage, 'Passwords do not match!');
+                return;
+            }
+
+            // 3. 验证邮箱
+            const em1 = email1.value.trim();
+            const em2 = email2.value.trim();
+            if (!em1 || !em2) {
+                showMessage(createMessage, 'Email cannot be empty!');
+                return;
+            }
+            if (em1 !== em2) {
+                showMessage(createMessage, 'Emails do not match!');
+                return;
+            }
+            const isEmailValid = em1.includes('@') && em1.includes('.');
+            if (!isEmailValid) {
+                showMessage(createMessage, 'Email format is incorrect!');
+                return;
+            }
+
+            // 4. 验证身份
+            const idt = identity.value.trim().toLowerCase();
+            if (idt !== 'customer' && idt !== 'merchant') {
+                showMessage(createMessage, 'Identity must be customer or merchant!');
+                return;
+            }
+
+            // 5. 创建账户并存储
+            const newAccount = {
+                id: accID,
+                password: pwd2,
+                email: em2,
+                identity: idt
+            };
+            customerDataBase.push(newAccount);
+            showMessage(createMessage, 'Successfully Creating!', true);
+            
+            // 3秒后返回初始模块
+            setTimeout(() => {
+                switchModule(initialModule, createAccountModule);
+            }, 1500);
+        });
+
+        // 登录模块事件
+        // 返回初始模块
+        btnBackLogin.addEventListener('click', () => {
+            switchModule(initialModule, landingModule);
+        });
+
+        // 提交登录
+        btnSubmitLogin.addEventListener('click', () => {
+            const logID = loginID.value.trim();
+            const logPwd = loginPwd.value.trim();
+
+            if (!logID || !logPwd) {
+                showMessage(loginMessage, 'ID or Password cannot be empty!');
+                return;
+            }
+
+            // 查找用户
+            const userIndex = customerDataBase.findIndex(item => item.id === logID);
+            if (userIndex === -1) {
+                showMessage(loginMessage, 'ID does not exist!');
+                return;
+            }
+
+            // 验证密码
+            if (customerDataBase[userIndex].password !== logPwd) {
+                showMessage(loginMessage, 'Password is incorrect!');
+                return;
+            }
+
+            // 登录成功，记录当前用户
+            CurrentUser = customerDataBase[userIndex];
+            showMessage(loginMessage, 'Successfully landing!', true);
+
+            // 根据身份切换到对应模块
+            setTimeout(() => {
+                if (CurrentUser.identity === 'customer') {
+                    switchModule(customerModule, landingModule);
+                } else {
+                    // 商家模块先渲染分类列表
+                    renderCategoryList();
+                    switchModule(merchantModule, landingModule);
+                }
+            }, 1500);
+        });
+
+        // 重置密码模块事件
+        // 返回初始模块
+        btnBackReset.addEventListener('click', () => {
+            switchModule(initialModule, resetPwdModule);
+        });
+
+        // 提交重置密码
+        btnSubmitReset.addEventListener('click', () => {
+            const resID = resetID.value.trim();
+            const resEmail = resetEmail.value.trim();
+            const newPassword = newPwd.value.trim();
+
+            if (!resID || !resEmail || !newPassword) {
+                showMessage(resetMessage, 'All fields cannot be empty!');
+                return;
+            }
+
+            // 查找用户
+            const userIndex = customerDataBase.findIndex(item => item.id === resID);
+            if (userIndex === -1) {
+                showMessage(resetMessage, 'ID does not exist!');
+                return;
+            }
+
+            // 验证邮箱
+            if (customerDataBase[userIndex].email !== resEmail) {
+                showMessage(resetMessage, 'Email is incorrect!');
+                return;
+            }
+
+            // 重置密码
+            customerDataBase[userIndex].password = newPassword;
+            showMessage(resetMessage, 'Successfully resetting password!', true);
+            
+            // 3秒后返回初始模块
+            setTimeout(() => {
+                switchModule(initialModule, resetPwdModule);
+            }, 1500);
+        });
+
+        // 客户中心模块事件
+        // 搜索商品
+        btnSearch.addEventListener('click', () => {
+            const keyword = searchKeyword.value.trim().toLowerCase();
+            if (!keyword) {
+                showMessage(customerMessage, 'Search keyword cannot be empty!');
+                return;
+            }
+
+            // 搜索商品（名称/分类包含关键词）
+            const result = productsDataBase.filter(item => 
+                item.name.toLowerCase().includes(keyword) || 
+                item.category.toLowerCase().includes(keyword)
+            );
+
+            // 渲染搜索结果
+            searchResult.innerHTML = '';
+            if (result.length === 0) {
+                showMessage(customerMessage, 'No products matched your search!');
+                return;
+            }
+
+            showMessage(customerMessage, `Found ${result.length} products!`, true);
+            result.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'list-item';
+                itemElement.textContent = `${index + 1}: ${item.name} $${item.price}`;
+                searchResult.appendChild(itemElement);
+            });
+        });
+
+        // 客户登出
+        btnLogoutCustomer.addEventListener('click', () => {
+            CurrentUser = null;
+            showMessage(customerMessage, 'Successfully logout!', true);
+            setTimeout(() => {
+                switchModule(initialModule, customerModule);
+            }, 1500);
+        });
+
+        // 商家中心模块事件
+        // 渲染分类列表
+        function renderCategoryList() {
+            categoryList.innerHTML = '';
+            categoriesDataBase.forEach((cat, index) => {
+                const catElement = document.createElement('div');
+                catElement.className = 'list-item';
+                catElement.textContent = `${index + 1}: ${cat}`;
+                categoryList.appendChild(catElement);
+            });
+        }
+
+        // 添加商品
+        btnAddProduct.addEventListener('click', () => {
+            const prodName = productName.value.trim();
+            const prodPrice = productPrice.value.trim();
+            const prodCategory = productCategory.value.trim().toLowerCase();
+
+            if (!prodName || !prodPrice) {
+                showMessage(merchantMessage, 'Product name or price cannot be empty!');
+                return;
+            }
+
+            // 验证价格格式（简单验证：数字）
+            if (isNaN(parseFloat(prodPrice))) {
+                showMessage(merchantMessage, 'Price must be a number!');
+                return;
+            }
+
+            // 如果分类不存在，添加到分类库
+            if (!categoriesDataBase.includes(prodCategory)) {
+                categoriesDataBase.push(prodCategory);
+                renderCategoryList(); // 重新渲染分类列表
+            }
+
+            // 创建商品并存储
+            const newProduct = {
+                name: prodName,
+                price: prodPrice,
+                category: prodCategory
+            };
+            productsDataBase.push(newProduct);
+            showMessage(merchantMessage, 'Product added successfully!', true);
+            
+            // 清空输入框
+            productName.value = '';
+            productPrice.value = '';
+            productCategory.value = '';
+        });
+
+        // 商家登出
+        btnLogoutMerchant.addEventListener('click', () => {
+            CurrentUser = null;
+            showMessage(merchantMessage, 'Successfully logout!', true);
+            setTimeout(() => {
+                switchModule(initialModule, merchantModule);
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
